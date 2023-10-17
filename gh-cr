@@ -22,4 +22,4 @@ if [ -z "$REPO_PATH" ]; then
 fi
 
 cd $REPO_PATH
-$EDITOR $REPO_PATH
+# $EDITOR $REPO_PATH

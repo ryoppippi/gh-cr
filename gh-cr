@@ -1,11 +1,18 @@
 #!/usr/bin/env bash
 
-gh repo create "$@"
+REPO_VISIBILITY=$(echo -e "private\npublic\ninternal" | fzf --layout=reverse --border --prompt="Select repo visibility: ")
+
+if [ -z "$REPO_VISIBILITY" ]; then
+  exit 0
+fi
+
+gh repo create "$@" --$REPO_VISIBILITY
 ghq get $1
 REPO_PATH=$(ghq list --full-path -e $1)
 
-# if repopath is not empty then open it
-if [ -n "$REPO_PATH" ]; then
-  cd $REPO_PATH
-  $EDITOR .
+if [ -z "$REPO_PATH" ]; then
+  exit 0
 fi
+
+cd $REPO_PATH
+$EDITOR $REPO_PATH

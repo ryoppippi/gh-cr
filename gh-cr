@@ -1,12 +1,19 @@
 #!/usr/bin/env bash
 
-REPO_VISIBILITY=$(echo -e "private\npublic\ninternal" | fzf --layout=reverse --border --prompt="Select repo visibility: ")
-
-if [ -z "$REPO_VISIBILITY" ]; then
-  exit 0
+# check if "$@" does not include "--public", "--private", or "--internal"
+if [[ ! "$@" =~ "--public" ]] && [[ ! "$@" =~ "--private" ]] && [[ ! "$@" =~ "--internal" ]]; then
+  REPO_VISIBILITY=$(echo -e "private\npublic\ninternal" | fzf --layout=reverse --border --prompt="Select repo visibility: ")
+  if [ -z "$REPO_VISIBILITY" ]; then
+    exit 0
+  fi
 fi
 
-gh repo create "$@" --$REPO_VISIBILITY
+REPO_CREATE_ARG="$@"
+if [ -n "$REPO_VISIBILITY" ]; then
+  REPO_CREATE_ARG+=" --$REPO_VISIBILITY"
+fi
+
+gh repo create $REPO_CREATE_ARG
 ghq get $1
 REPO_PATH=$(ghq list --full-path -e $1)
 

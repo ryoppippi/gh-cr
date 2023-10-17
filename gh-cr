@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+gh repo create "$@"
+ghq get $1
+REPO_PATH=$(ghq list --full-path -e $1)
+
+# if repopath is not empty then open it
+if [ -n "$REPO_PATH" ]; then
+  cd $REPO_PATH
+  $EDITOR .
+fi
